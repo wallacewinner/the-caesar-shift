@@ -3,7 +3,7 @@
 //@author: Wallace Winner
 //04-2020
 
-require "../vendor/autoload.php";
+require "./vendor/autoload.php";
 
 use GuzzleHttp\Client;
 
@@ -37,7 +37,31 @@ function caesar_shift($text_cript, $factor){
     return  $decrypted ; // show thre result
 }
 
-//get the content of json
+function request($type, $uri){
+    //get the content of json auth
+    $file = file_get_contents("auth.json");
+    $json_decode =  json_decode($file);
+    $token = $json_decode->token;
+    //create the client
+    $client = new Client([
+        'base_uri' => 'https://api.codenation.dev/v1/challenge/dev-ps/',
+        'http_errors' => false,
+        'header' => ['User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.80 Safari/537.36 OPR/62.0.3331.18']
+    ]);
+    //do the request
+    $request = $client->request($type, $uri.'?token='.$token,[
+      'read_timeout' => 10,
+    ]);
+    
+    return ($request);
+}
+
+$get_file_answer = request('GET', 'generate-data');
+$fp = fopen('answer.json', 'w');
+fwrite($fp, $get_file_answer->getBody());
+fclose($fp);
+
+//get the content of json answer
 $file = file_get_contents("answer.json");
 $json_decode =  json_decode($file) ;
 
@@ -52,9 +76,6 @@ $factor = $json_decode->numero_casas;
 print_r (strtoupper($text_cript).PHP_EOL);
 
 print_r (caesar_shift($text_cript,$factor));
-
-
-
 
 
 /*TO DO
