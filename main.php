@@ -42,6 +42,7 @@ function request($type, $uri){
     $file = file_get_contents("auth.json");
     $json_decode =  json_decode($file);
     $token = $json_decode->token;
+
     //create the client
     $client = new Client([
         'base_uri' => 'https://api.codenation.dev/v1/challenge/dev-ps/',
@@ -56,6 +57,9 @@ function request($type, $uri){
     return ($request);
 }
 
+/*this block is responsible for the 
+/capture of the data from API and 
+/saves it on Json file.*/
 $get_file_answer = request('GET', 'generate-data');
 $fp = fopen('answer.json', 'w');
 fwrite($fp, $get_file_answer->getBody());
@@ -65,8 +69,7 @@ fclose($fp);
 $file = file_get_contents("answer.json");
 $json_decode =  json_decode($file) ;
 
-//text that user insert
-//TO DO ask to user insert text
+//take the text
 $text_cript = $json_decode->cifrado;
 
 //factor is the element to find the response
@@ -75,12 +78,13 @@ $factor = $json_decode->numero_casas;
 //print the encrypted text
 print_r (strtoupper($text_cript).PHP_EOL);
 
+//run the function to decrypt
 print_r (caesar_shift($text_cript,$factor));
 
 
 /*TO DO
 transform the logical of Caesar in function ---> OK
-make a function to capture the file json;
+make a function to capture the file json ---> OK
 make a function to crypto the answer
 make a function to send the response;
 */
