@@ -1,1 +1,4 @@
 answer.json
+auth.json
+vendor/
+composer.lock
