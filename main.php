@@ -39,9 +39,9 @@ function caesar_shift($text_cript, $factor){
 
 function request($type, $uri){
     //get the content of json auth
-    $file = file_get_contents("auth.json");
-    $json_decode =  json_decode($file);
-    $token = $json_decode->token;
+    $file_auth = file_get_contents("auth.json");
+    $json_decode_auth =  json_decode($file_auth);
+    $token = $json_decode_auth->token;
 
     //create the client
     $client = new Client([
@@ -66,20 +66,30 @@ fwrite($fp, $get_file_answer->getBody());
 fclose($fp);
 
 //get the content of json answer
-$file = file_get_contents("answer.json");
-$json_decode =  json_decode($file) ;
+$file_answer = file_get_contents("answer.json");
+$json_decode_answer =  json_decode($file_answer) ;
 
 //take the text
-$text_cript = $json_decode->cifrado;
-
+$text_cript = $json_decode_answer->cifrado;
 //factor is the element to find the response
-$factor = $json_decode->numero_casas;
-
+$factor = $json_decode_answer->numero_casas;
 //print the encrypted text
 print_r (strtoupper($text_cript).PHP_EOL);
 
+
 //run the function to decrypt
-print_r (caesar_shift($text_cript,$factor));
+$decrypted = (caesar_shift($text_cript,$factor));
+
+//add the result to key from file answer
+$json_decode_answer->decifrado = $decrypted;
+$json_decode_answer->resumo_criptografico = 'teste2';
+//save the file answer
+file_put_contents('answer.json', json_encode($json_decode_answer));
+
+$file_answer2 = file_get_contents("answer.json");
+$json_decode_answer2 =  json_decode($file_answer2, true) ;
+print_r ($json_decode_answer2);
+
 
 
 /*TO DO
