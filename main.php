@@ -82,7 +82,7 @@ $decrypted = (caesar_shift($text_cript,$factor));
 
 //add the result to key from file answer
 $json_decode_answer->decifrado = $decrypted;
-$json_decode_answer->resumo_criptografico = 'teste2';
+$json_decode_answer->resumo_criptografico = sha1($decrypted);
 //save the file answer
 file_put_contents('answer.json', json_encode($json_decode_answer));
 
@@ -95,6 +95,6 @@ print_r ($json_decode_answer2);
 /*TO DO
 transform the logical of Caesar in function ---> OK
 make a function to capture the file json ---> OK
-make a function to crypto the answer
+make a function to crypto the answer ---> OK
 make a function to send the response;
 */
