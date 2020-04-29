@@ -5,7 +5,7 @@
 
 //text that user insert
 //TO DO ask to user insert text
-$text_cript = "vjcv jctfna gxgt jcrrgpu \"ku cpqvjgt yca qh ucakpi \"kv jcrrgpu\". fqwincu etqemhqtf";
+$text_cript = "D OLJHLUD UDSRVD PDUURP VDOWRX VREUH R FDFKRUUR FDQVDGR 23 CHCH 1d.d  AA BB CC ZZ";
 //array with letter of alphabet
 $alphabet = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
 //explode the text and set like a array
@@ -24,19 +24,10 @@ for ($i=0; $i <= count($pieces); $i++) {
         $key_alphabet = (array_search($pieces[$i], $alphabet));
         $key_alphabet_discrypted = $key_alphabet - $factor;
 
-        switch ($key_alphabet_discrypted) {
-            case '-3':
-                $decrypted .= "X";
-                break;
-            case '-2':
-                $decrypted .= "Y";
-                break;
-            case '-1':
-                $decrypted .= "Z";
-                break;
-            default:
-                $decrypted .= ($alphabet[$key_alphabet_discrypted]);
-                break;
+        if ($key_alphabet_discrypted < 0){
+            $decrypted .= ( $alphabet[$key_alphabet_discrypted + count($alphabet)]);
+        }else {
+            $decrypted .= ($alphabet[$key_alphabet_discrypted]);
         }
         
     }else{
