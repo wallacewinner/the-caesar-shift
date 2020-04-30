@@ -49,52 +49,71 @@ function request($type, $uri){
         'http_errors' => false,
         'header' => ['User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.80 Safari/537.36 OPR/62.0.3331.18']
     ]);
-    //do the request
-    $request = $client->request($type, $uri.'?token='.$token,[
-      'read_timeout' => 10,
-    ]);
+
+    if ($type == 'POST') {
+        $request = $client->request($type, $uri.'?token='.$token,[
+            'multipart' => [
+                [
+                    'name'     => 'answer',
+                    'contents' => fopen('answer.json', 'r')
+                ]
+            ],
+        ]);
+    }else {
+       //do the request
+        $request = $client->request($type, $uri.'?token='.$token,[
+            'read_timeout' => 10,
+        ]);
+    }
+    
     
     return ($request);
 }
 
+echo "Start...".PHP_EOL;
 /*this block is responsible for the 
 /capture of the data from API and 
 /saves it on Json file.*/
+echo "Doing the request...".PHP_EOL;
+$file_name = "answer.json";
 $get_file_answer = request('GET', 'generate-data');
-$fp = fopen('answer.json', 'w');
+$fp = fopen($file_name, 'w');
 fwrite($fp, $get_file_answer->getBody());
 fclose($fp);
 
+
 //get the content of json answer
-$file_answer = file_get_contents("answer.json");
+$file_answer = file_get_contents($file_name);
 $json_decode_answer =  json_decode($file_answer) ;
 
 //take the text
 $text_cript = $json_decode_answer->cifrado;
 //factor is the element to find the response
 $factor = $json_decode_answer->numero_casas;
-//print the encrypted text
-print_r (strtoupper($text_cript).PHP_EOL);
-
 
 //run the function to decrypt
+echo "Decrypting...".PHP_EOL;
 $decrypted = (caesar_shift($text_cript,$factor));
 
 //add the result to key from file answer
 $json_decode_answer->decifrado = $decrypted;
 $json_decode_answer->resumo_criptografico = sha1($decrypted);
 //save the file answer
-file_put_contents('answer.json', json_encode($json_decode_answer));
+echo "Saving...".PHP_EOL;
+file_put_contents($file_name, json_encode($json_decode_answer));
 
-$file_answer2 = file_get_contents("answer.json");
-$json_decode_answer2 =  json_decode($file_answer2, true) ;
-print_r ($json_decode_answer2);
+/*this block is responsible for the 
+/send the data.*/
+echo "sending...".PHP_EOL;
+$file_name_response = "response.json";
+$get_file_response = request('POST', 'submit-solution');
+$fp = fopen($file_name_response, 'w');
+fwrite($fp, $get_file_response->getBody());
+fclose($fp);
+
+print_r ("Done".PHP_EOL);
 
 
 
-/*TO DO
-transform the logical of Caesar in function ---> OK
-make a function to capture the file json ---> OK
-make a function to crypto the answer ---> OK
-make a function to send the response;
-*/
+
+
