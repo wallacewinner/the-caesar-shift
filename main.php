@@ -93,7 +93,7 @@ $factor = $json_decode_answer->numero_casas;
 
 //run the function to decrypt
 echo "Decrypting...".PHP_EOL;
-$decrypted = (caesar_shift($text_cript,$factor));
+$decrypted = strtolower((caesar_shift($text_cript,$factor)));
 
 //add the result to key from file answer
 $json_decode_answer->decifrado = $decrypted;
